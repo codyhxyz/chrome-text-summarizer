@@ -101,14 +101,14 @@ this repo won't render nicely from GitHub raw. Three easy options:
 ```bash
 # Enable GitHub Pages on the repo's main branch / root.
 # Then the policy is served at:
-#   https://codyhxyz.github.io/chrome-text-summarizer/PRIVACY
+#   https://codyhxyz.github.io/webpage-summarizer/PRIVACY
 # (GitHub Pages auto-renders .md files as .html)
 ```
 
 ### Option 2 — Link to the raw GitHub file
 
 ```
-https://github.com/codyhxyz/chrome-text-summarizer/blob/main/PRIVACY.md
+https://github.com/codyhxyz/webpage-summarizer/blob/main/PRIVACY.md
 ```
 
 GitHub's rendered view works in CWS. Fastest. Slightly less

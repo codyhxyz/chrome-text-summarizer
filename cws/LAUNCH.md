@@ -64,7 +64,7 @@ Open source (MIT). No analytics, no remote fonts, no tracking.
 The whole thing is ~500 lines of vanilla JS + a shared tokens.css.
 No build step.
 
-github.com/codyhxyz/chrome-text-summarizer
+github.com/codyhxyz/webpage-summarizer
 ```
 
 ---
@@ -163,7 +163,7 @@ Tech:
 • MIT, open source
 
 Chrome Web Store: <link>
-GitHub: github.com/codyhxyz/chrome-text-summarizer
+GitHub: github.com/codyhxyz/webpage-summarizer
 
 Would love feedback from anyone who reads a lot online.
 ```
@@ -205,7 +205,7 @@ It's MIT on GitHub. Happy to answer questions about the Summarizer
 API, MV3 streaming with SSE, or the on-device vs cloud UX trade-offs.
 
 Store: <link>
-Code: github.com/codyhxyz/chrome-text-summarizer
+Code: github.com/codyhxyz/webpage-summarizer
 ```
 
 ---

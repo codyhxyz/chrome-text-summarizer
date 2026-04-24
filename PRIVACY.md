@@ -61,4 +61,4 @@ lives at the top of this file, with the "Last Updated" date.
 ## Contact
 
 Questions or concerns: open an issue at
-[github.com/codyhxyz/chrome-text-summarizer/issues](https://github.com/codyhxyz/chrome-text-summarizer/issues).
+[github.com/codyhxyz/webpage-summarizer/issues](https://github.com/codyhxyz/webpage-summarizer/issues).

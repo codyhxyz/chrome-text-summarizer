@@ -24,7 +24,7 @@ on-device isn't available.
 
 1. Clone:
    ```bash
-   git clone https://github.com/codyhxyz/chrome-text-summarizer.git
+   git clone https://github.com/codyhxyz/webpage-summarizer.git
    ```
 2. Open `chrome://extensions/`, enable **Developer mode**, click
    **Load unpacked**, point at the cloned directory.

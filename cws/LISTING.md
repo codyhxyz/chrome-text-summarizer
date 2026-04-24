@@ -78,7 +78,7 @@ The extension talks to exactly one external service — Google's Gemini
 API — and only when you have opted into cloud mode by saving a key.
 
 Open source. MIT-licensed.
-https://github.com/codyhxyz/chrome-text-summarizer
+https://github.com/codyhxyz/webpage-summarizer
 ```
 
 ## Permissions justifications (for CWS review form)
