@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Shot 3 — Length control</title>
+        <link rel="stylesheet" href="shot.css" />
+    </head>
+    <body>
+        <div class="shot">
+            <div class="shot-head">
+                <span class="shot-eyebrow">2 — CONTROL</span>
+                <h1 class="shot-title">
+                    Short, medium, or long — <em>your call.</em>
+                </h1>
+            </div>
+
+            <div class="shot-canvas" style="justify-content: center; align-items: center">
+                <div
+                    style="
+                        width: 440px;
+                        height: 560px;
+                        background: #fff;
+                        border: 1px solid #d4d4d4;
+                        border-radius: 10px;
+                        box-shadow: 0 24px 48px -16px rgba(0, 0, 0, 0.18),
+                            0 2px 8px rgba(0, 0, 0, 0.04);
+                        display: flex;
+                        flex-direction: column;
+                        overflow: hidden;
+                        position: relative;
+                    "
+                >
+                    <div class="sp-top">
+                        <div class="sp-brand">
+                            <span class="sp-mark">
+                                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <rect x="3" y="6" width="18" height="2.6" rx="1.3" fill="currentColor"/>
+                                    <rect x="3" y="11" width="13" height="2.6" rx="1.3" fill="currentColor"/>
+                                    <rect x="3" y="16" width="8" height="2.6" rx="1.3" fill="currentColor"/>
+                                </svg>
+                            </span>
+                            <span class="sp-name">Summarizer</span>
+                        </div>
+                        <div class="sp-status">
+                            <span class="sp-dot"></span>
+                            Done
+                        </div>
+                    </div>
+                    <div class="sp-main">
+                        <div class="sp-provider">On-device · Nano</div>
+                        <div class="sp-prose">
+                            <p>
+                                Prompt engineering structures natural-language
+                                instructions so a generative AI model can
+                                interpret the task. A prompt may specify
+                                phrasing, style, context, or role, and in
+                                multimodal systems it describes a desired image
+                                or audio output.
+                            </p>
+                        </div>
+                        <div class="sp-source">▸ Source</div>
+                    </div>
+                    <div class="sp-bar">
+                        <div class="sp-seg">
+                            <button>Short</button>
+                            <button class="on">Medium</button>
+                            <button>Long</button>
+                        </div>
+                        <div class="sp-actions">
+                            <button>Copy</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="callout" style="left: 810px; top: 470px">
+                    <div class="callout-label">Regenerate in place</div>
+                    <div class="callout-body">
+                        Switch between short / medium / long at any time. The
+                        summary streams again at the new length.
+                    </div>
+                </div>
+                <div
+                    class="callout-arrow"
+                    style="left: 760px; top: 490px; transform: rotate(14deg)"
+                >
+                    <svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M4 20 Q 20 10 34 20"
+                            fill="none"
+                            stroke="#1a1a1a"
+                            stroke-width="1.5"
+                            stroke-linecap="round"
+                        />
+                        <path
+                            d="M30 14 L 36 20 L 30 22"
+                            fill="none"
+                            stroke="#1a1a1a"
+                            stroke-width="1.5"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        />
+                    </svg>
+                </div>
+            </div>
+
+            <div class="shot-badge">
+                <span class="mark">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="3" y="6" width="18" height="2.6" rx="1.3" fill="currentColor"/>
+                        <rect x="3" y="11" width="13" height="2.6" rx="1.3" fill="currentColor"/>
+                        <rect x="3" y="16" width="8" height="2.6" rx="1.3" fill="currentColor"/>
+                    </svg>
+                </span>
+                Stop · Regenerate · Copy — one-tap controls.
+            </div>
+        </div>
+    </body>
+</html>

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Shot 5 — PDFs</title>
+        <link rel="stylesheet" href="shot.css" />
+    </head>
+    <body>
+        <div class="shot">
+            <div class="shot-head">
+                <span class="shot-eyebrow">4 — PDFs TOO</span>
+                <h1 class="shot-title">
+                    Works on PDFs. <em>Obviously.</em>
+                </h1>
+            </div>
+
+            <div class="shot-canvas">
+                <div class="browser">
+                    <div class="browser-bar">
+                        <div class="browser-dots">
+                            <span class="browser-dot"></span>
+                            <span class="browser-dot"></span>
+                            <span class="browser-dot"></span>
+                        </div>
+                        <div class="browser-url">
+                            chrome-extension://…/summary_display.html?handoff=7fh4a
+                        </div>
+                    </div>
+                    <div class="browser-body" style="background: #f5f5f5; padding: 32px; flex-direction: column; align-items: center; justify-content: flex-start; overflow: auto">
+                        <div
+                            style="
+                                width: 680px;
+                                background: #fff;
+                                border: 1px solid var(--rule);
+                                border-radius: 4px;
+                                padding: 28px 32px;
+                            "
+                        >
+                            <div
+                                style="
+                                    display: flex;
+                                    align-items: center;
+                                    justify-content: space-between;
+                                    padding-bottom: 14px;
+                                    border-bottom: 1px solid var(--rule);
+                                    margin-bottom: 18px;
+                                "
+                            >
+                                <div style="font-family: var(--font-mono); font-size: 11px; color: var(--fg-muted); letter-spacing: 0.02em">
+                                    On-device · Nano
+                                </div>
+                                <div class="sp-seg" style="transform: scale(0.95); transform-origin: right">
+                                    <button>Short</button>
+                                    <button class="on">Medium</button>
+                                    <button>Long</button>
+                                </div>
+                            </div>
+
+                            <div class="sp-prose" style="font-size: 15px">
+                                <p>
+                                    Cohen and Maher's paper on <strong>causal
+                                    inference in distributed systems</strong>
+                                    argues that standard randomized trials
+                                    break down when subjects can coordinate
+                                    out-of-band. They propose a family of
+                                    estimators that remain unbiased under
+                                    lateral communication, at the cost of
+                                    wider confidence intervals.
+                                </p>
+                                <ul style="padding-left: 20px">
+                                    <li>
+                                        Classical RCT assumptions require
+                                        independent treatment assignment.
+                                    </li>
+                                    <li>
+                                        Lateral communication breaks
+                                        independence even when assignment is
+                                        random.
+                                    </li>
+                                    <li>
+                                        Empirical simulations show a
+                                        <strong>2.4×</strong> variance penalty
+                                        in exchange for de-biasing.
+                                    </li>
+                                </ul>
+                                <p style="color: var(--fg-muted); font-size: 13px; margin-top: 14px">
+                                    Selection extracted from
+                                    <em>causal-inference-2026.pdf</em>,
+                                    pages 4–7.
+                                </p>
+                            </div>
+
+                            <div style="display: flex; gap: 8px; margin-top: 22px; padding-top: 16px; border-top: 1px solid var(--rule)">
+                                <button
+                                    style="padding: 5px 10px; font-size: 12px; background: #fff; border: 1px solid var(--rule-strong); color: var(--fg-muted); border-radius: 3px; font-family: var(--font-sans); font-weight: 500"
+                                >Copy</button>
+                                <button
+                                    style="padding: 5px 10px; font-size: 12px; background: #fff; border: 1px solid var(--rule-strong); color: var(--fg-muted); border-radius: 3px; font-family: var(--font-sans); font-weight: 500"
+                                >Regenerate</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="shot-badge">
+                <span class="mark">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="3" y="6" width="18" height="2.6" rx="1.3" fill="currentColor"/>
+                        <rect x="3" y="11" width="13" height="2.6" rx="1.3" fill="currentColor"/>
+                        <rect x="3" y="16" width="8" height="2.6" rx="1.3" fill="currentColor"/>
+                    </svg>
+                </span>
+                Local PDFs, remote PDFs, pages where the side panel can't open.
+            </div>
+        </div>
+    </body>
+</html>

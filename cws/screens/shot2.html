@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Shot 2 — Right-click</title>
+        <link rel="stylesheet" href="shot.css" />
+    </head>
+    <body>
+        <div class="shot">
+            <div class="shot-head">
+                <span class="shot-eyebrow">1 — TRIGGER</span>
+                <h1 class="shot-title">Right-click anything.</h1>
+            </div>
+
+            <div class="shot-canvas">
+                <div class="browser">
+                    <div class="browser-bar">
+                        <div class="browser-dots">
+                            <span class="browser-dot"></span>
+                            <span class="browser-dot"></span>
+                            <span class="browser-dot"></span>
+                        </div>
+                        <div class="browser-url">
+                            en.wikipedia.org/wiki/Prompt_engineering
+                        </div>
+                    </div>
+                    <div class="browser-body" style="position: relative">
+                        <div class="article" style="padding: 48px 80px">
+                            <p class="article-eyebrow">From Wikipedia</p>
+                            <h1 class="article-title">Prompt engineering</h1>
+                            <div class="article-body" style="margin-top: 12px">
+                                <p>
+                                    <span class="highlight">
+                                        Prompt engineering is the process of
+                                        structuring an instruction that can be
+                                        interpreted and understood by a
+                                        generative artificial intelligence model.
+                                        A prompt is natural-language text
+                                        describing the task an AI should
+                                        perform.
+                                    </span>
+                                </p>
+                                <p>
+                                    A prompt for a text-to-text language model
+                                    can be a query, a command, or a longer
+                                    statement including context, instructions,
+                                    and conversation history. Prompt
+                                    engineering may involve phrasing a query,
+                                    specifying a style, providing relevant
+                                    context, or assigning a role.
+                                </p>
+                                <p>
+                                    When communicating with a text-to-image or
+                                    text-to-audio model, a typical prompt is a
+                                    description of a desired output such as a
+                                    photograph of a high-quality photo of an
+                                    astronaut riding a horse.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="ctxmenu" style="top: 160px; left: 430px">
+                            <div class="ctxmenu-item">Copy</div>
+                            <div class="ctxmenu-item">Search Google for &ldquo;…&rdquo;</div>
+                            <div class="ctxmenu-item">Print…</div>
+                            <div class="ctxmenu-sep"></div>
+                            <div class="ctxmenu-item active shortcut">
+                                Summarize selection
+                                <span class="k">⌘⇧S</span>
+                            </div>
+                            <div class="ctxmenu-sep"></div>
+                            <div class="ctxmenu-item">Inspect</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="shot-badge">
+                <span class="mark">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="3" y="6" width="18" height="2.6" rx="1.3" fill="currentColor"/>
+                        <rect x="3" y="11" width="13" height="2.6" rx="1.3" fill="currentColor"/>
+                        <rect x="3" y="16" width="8" height="2.6" rx="1.3" fill="currentColor"/>
+                    </svg>
+                </span>
+                Context menu or keyboard shortcut — your pick.
+            </div>
+        </div>
+    </body>
+</html>
