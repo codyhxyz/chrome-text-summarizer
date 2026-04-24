@@ -48,8 +48,10 @@ crash reporters, no telemetry.
 - `sidePanel` — opens the summary in Chrome's side panel.
 - `scripting` + `activeTab` — only on keyboard-shortcut press, reads the
   currently selected text from the active tab. No background page reading.
-- `host_permissions` for `generativelanguage.googleapis.com` — only used when
-  you've added an API key. The Extension cannot reach any other host.
+- `optional_host_permissions` for two exact Gemini API endpoints —
+  **not granted at install**. Requested only when you save a Gemini
+  API key in the welcome or options page. If you use on-device Nano,
+  the Extension never asks for network access.
 
 ## Changes to this policy
 

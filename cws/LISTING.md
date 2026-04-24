@@ -85,12 +85,12 @@ https://github.com/codyhxyz/chrome-text-summarizer
 
 | Permission | Justification |
 |---|---|
-| `contextMenus` | Adds the right-click "Summarize selection" menu item. |
-| `storage` | Persists your API key (local), your custom prompt (synced), and your length preference (local). Also used for a short-lived PDF handoff via `storage.session`. |
-| `sidePanel` | Opens the summary in Chrome's side panel so the article stays visible next to it. |
-| `scripting` | Used only when the keyboard shortcut fires, to read the active tab's current text selection via `window.getSelection()`. No other scripts injected. |
-| `activeTab` | Pairs with `scripting` on shortcut press — grants temporary access to the currently active tab so the selection can be read. Revoked after each use. |
-| Host: `generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro-latest:*` | Only target when the user has opted into cloud Gemini by saving an API key. No other hosts. |
+| `contextMenus` | Adds the right-click "Summarize selection" menu item so users can invoke the extension from any selection on any page. This is the primary entry point. |
+| `storage` | Persists the user's Gemini API key in `chrome.storage.local` (device-only), their custom prompt in `chrome.storage.sync`, and their short/medium/long length preference in `chrome.storage.local`. Also used for a short-lived PDF handoff payload via `chrome.storage.session`, which is cleared as soon as the fallback tab reads it. |
+| `sidePanel` | Opens the summary in Chrome's side panel so the source article stays visible next to the summary. Required for the extension's core reading UX. |
+| `scripting` | Used **only** when the user presses the keyboard shortcut (`Ctrl+Shift+S` / `⌘⇧S`). At that moment the extension runs a single, inline function via `chrome.scripting.executeScript` that returns `window.getSelection().toString()` from the active tab so the selection can be summarized. No scripts are injected at any other time and no DOM is modified. |
+| `activeTab` | Pairs with `scripting` on that same shortcut press. Chrome's `activeTab` grants the extension temporary host access to the currently active tab for the duration of that single user gesture, then revokes it. This is how we avoid asking for broad host access just to read the user's current text selection via the keyboard. |
+| **Optional** host: `generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro-latest:{generateContent,streamGenerateContent}` | Declared as `optional_host_permissions`, not granted at install. The extension requests it only when the user chooses the cloud-Gemini path by pasting and saving an API key in the welcome page or options page. Users who rely on the on-device Gemini Nano backend never need to grant this permission. Two exact URL patterns — the extension cannot reach any other host, including other Google endpoints. |
 
 ## Single-purpose description (for CWS review form)
 

@@ -6,6 +6,11 @@
 (() => {
     const $ = (id) => document.getElementById(id);
 
+    const GEMINI_HOST_ORIGINS = [
+        "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro-latest:generateContent",
+        "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro-latest:streamGenerateContent",
+    ];
+
     const dot = $("o-dot");
     const providerLabel = $("o-provider-label");
     const providerSub = $("o-provider-sub");
@@ -74,21 +79,40 @@
             status.style.color = "var(--danger)";
             return;
         }
-        chrome.storage.local.set({ geminiApiKey: v }, () => {
-            status.textContent = "Saved";
-            status.style.color = "var(--ok)";
-            setTimeout(() => (status.textContent = ""), 1600);
-            refreshStatus();
-        });
+        // permissions.request must run in the user gesture — call it
+        // synchronously here, save the key only on grant.
+        chrome.permissions.request(
+            { origins: GEMINI_HOST_ORIGINS },
+            (granted) => {
+                if (!granted) {
+                    status.textContent = "Permission declined";
+                    status.style.color = "var(--danger)";
+                    setTimeout(() => (status.textContent = ""), 2000);
+                    return;
+                }
+                chrome.storage.local.set({ geminiApiKey: v }, () => {
+                    status.textContent = "Saved";
+                    status.style.color = "var(--ok)";
+                    setTimeout(() => (status.textContent = ""), 1600);
+                    refreshStatus();
+                });
+            }
+        );
     });
 
     del.addEventListener("click", () => {
+        // Remove key + revoke the host permission in one step.
         chrome.storage.local.remove(["geminiApiKey"], () => {
-            apiKey.value = "";
-            status.textContent = "Deleted";
-            status.style.color = "var(--warn)";
-            setTimeout(() => (status.textContent = ""), 1600);
-            refreshStatus();
+            chrome.permissions.remove(
+                { origins: GEMINI_HOST_ORIGINS },
+                () => {
+                    apiKey.value = "";
+                    status.textContent = "Deleted";
+                    status.style.color = "var(--warn)";
+                    setTimeout(() => (status.textContent = ""), 1600);
+                    refreshStatus();
+                }
+            );
         });
     });
 

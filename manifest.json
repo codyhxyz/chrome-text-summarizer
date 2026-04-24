@@ -10,7 +10,7 @@
         "scripting",
         "activeTab"
     ],
-    "host_permissions": [
+    "optional_host_permissions": [
         "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro-latest:generateContent",
         "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro-latest:streamGenerateContent"
     ],

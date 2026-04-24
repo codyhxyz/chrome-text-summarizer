@@ -9,6 +9,18 @@
 const GEMINI_STREAM_URL =
     "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro-latest:streamGenerateContent";
 
+// Host permission patterns that match `optional_host_permissions` in
+// manifest.json. Both must be granted before the cloud Gemini path
+// can fetch. Requested at runtime in the same gesture as "save key".
+const GEMINI_HOST_ORIGINS = [
+    "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro-latest:generateContent",
+    "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro-latest:streamGenerateContent",
+];
+
+async function hasGeminiHostPermission() {
+    return await chrome.permissions.contains({ origins: GEMINI_HOST_ORIGINS });
+}
+
 const DEFAULT_PROMPT = "Summarize the following text:";
 const DEFAULT_LENGTH = "medium"; // short | medium | long
 
@@ -123,6 +135,14 @@ async function runGemini({ text, length, signal, onChunk }) {
     if (!apiKey) {
         const err = new Error("No Gemini API key configured.");
         err.kind = "no-key";
+        throw err;
+    }
+
+    if (!(await hasGeminiHostPermission())) {
+        const err = new Error(
+            "Permission to call the Gemini API hasn't been granted yet."
+        );
+        err.kind = "no-host-permission";
         throw err;
     }
 
@@ -461,6 +481,13 @@ chrome.runtime.onMessage.addListener((req, sender, sendResponse) => {
 
     if (req.action === "nanoAvailability") {
         nanoAvailability().then((a) => sendResponse({ availability: a }));
+        return true;
+    }
+
+    if (req.action === "hasGeminiHost") {
+        hasGeminiHostPermission().then((granted) =>
+            sendResponse({ granted })
+        );
         return true;
     }
 

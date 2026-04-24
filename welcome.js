@@ -10,6 +10,11 @@
 (() => {
     const $ = (id) => document.getElementById(id);
 
+    const GEMINI_HOST_ORIGINS = [
+        "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro-latest:generateContent",
+        "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro-latest:streamGenerateContent",
+    ];
+
     const stepProvider = $("step-provider");
     const providerDetail = $("provider-detail");
     const providerActions = $("provider-actions");
@@ -73,16 +78,29 @@
                 status.style.color = "var(--danger)";
                 return;
             }
-            chrome.storage.local.set({ geminiApiKey: v }, () => {
-                status.textContent = "Saved";
-                status.style.color = "var(--ok)";
-                setTimeout(() => {
-                    markProviderDone(
-                        "Cloud — Gemini API",
-                        "Key saved. We'll use Gemini for every summary."
-                    );
-                }, 600);
-            });
+            // Synchronous gesture chain — permissions.request must be
+            // invoked inside the click handler with no prior awaits.
+            chrome.permissions.request(
+                { origins: GEMINI_HOST_ORIGINS },
+                (granted) => {
+                    if (!granted) {
+                        status.textContent =
+                            "Permission declined. Click again to grant.";
+                        status.style.color = "var(--danger)";
+                        return;
+                    }
+                    chrome.storage.local.set({ geminiApiKey: v }, () => {
+                        status.textContent = "Saved";
+                        status.style.color = "var(--ok)";
+                        setTimeout(() => {
+                            markProviderDone(
+                                "Cloud — Gemini API",
+                                "Key saved and network permission granted. We'll use Gemini for every summary."
+                            );
+                        }, 600);
+                    });
+                }
+            );
         });
 
         // Pre-fill if user already has a key

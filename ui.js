@@ -112,6 +112,8 @@
     const ERROR_COPY = {
         "no-key":
             "Gemini Nano isn't available here and no cloud API key is configured. Add one in options, or try a recent Chrome build.",
+        "no-host-permission":
+            "Cloud Gemini needs your permission to reach generativelanguage.googleapis.com. Grant it from the setup page.",
         network:
             "The Gemini API request failed. Check your connection and try again.",
         unavailable:
@@ -119,6 +121,11 @@
         content:
             "The selected text couldn't be summarized. Try a longer selection.",
     };
+
+    const GEMINI_HOST_ORIGINS = [
+        "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro-latest:generateContent",
+        "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro-latest:streamGenerateContent",
+    ];
 
     /**
      * refs: {
@@ -160,9 +167,27 @@
                     chrome.runtime.openOptionsPage()
                 );
                 refs.errorActions.appendChild(btn);
+            } else if (kind === "no-host-permission") {
+                // Must call permissions.request from a user gesture —
+                // do it synchronously in the click handler.
+                const btn = document.createElement("button");
+                btn.className = "primary";
+                btn.textContent = "Grant permission";
+                btn.addEventListener("click", () => {
+                    chrome.permissions.request(
+                        { origins: GEMINI_HOST_ORIGINS },
+                        (granted) => {
+                            if (granted) regenerate();
+                        }
+                    );
+                });
+                refs.errorActions.appendChild(btn);
             }
             const retry = document.createElement("button");
-            retry.className = kind === "no-key" ? "ghost" : "primary";
+            retry.className =
+                kind === "no-key" || kind === "no-host-permission"
+                    ? "ghost"
+                    : "primary";
             retry.textContent = "Retry";
             retry.addEventListener("click", regenerate);
             refs.errorActions.appendChild(retry);
