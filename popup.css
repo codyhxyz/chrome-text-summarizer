@@ -59,22 +59,17 @@ body {
 
 .p-hint {
     font-size: 13px;
-    line-height: 1.55;
-    color: var(--fg);
+    line-height: 1.5;
+    color: var(--fg-muted);
     margin: 0 0 14px;
-    padding: 11px 13px;
-    background: var(--bg-elev);
-    border: 1px solid var(--rule);
-    border-radius: var(--r-3);
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--rule);
 }
 
 .p-hint em {
-    background: var(--accent-soft);
-    color: var(--fg);
-    padding: 1px 5px;
-    border-radius: var(--r-1);
     font-style: normal;
-    font-weight: 500;
+    font-weight: 600;
+    color: var(--fg);
 }
 
 .p-prompt {

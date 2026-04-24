@@ -48,7 +48,6 @@ body {
     border: 1px solid var(--rule);
     border-radius: var(--r-3);
     padding: 28px 32px;
-    box-shadow: var(--shadow-2);
 }
 
 .sd-head {

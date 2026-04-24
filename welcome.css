@@ -1,88 +1,72 @@
 /* ============================================================
- * Welcome / onboarding page.
+ * Welcome / onboarding — plain, functional.
  * ============================================================ */
 
 body {
     min-height: 100vh;
-    background: var(--bg-sunk);
+    background: var(--bg);
 }
 
 .w-main {
     max-width: 640px;
     margin: 0 auto;
-    padding: 56px 28px 40px;
+    padding: 48px 24px 32px;
 }
 
-/* ---------- Header ---------- */
-
 .w-header {
-    text-align: left;
     margin-bottom: 32px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--rule);
 }
 
 .w-header .brand-mark {
-    width: 44px;
-    height: 44px;
-    margin-bottom: 18px;
+    width: 36px;
+    height: 36px;
+    margin-bottom: 16px;
 }
 
 .w-title {
     font-family: var(--font-sans);
-    font-size: 28px;
-    line-height: 1.15;
-    letter-spacing: -0.02em;
+    font-size: 26px;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
     font-weight: 600;
-    margin: 0 0 10px;
+    margin: 0 0 8px;
     color: var(--fg);
 }
 
 .w-lead {
-    font-size: 16px;
+    font-size: 15px;
     line-height: 1.5;
     color: var(--fg-muted);
     margin: 0;
-    max-width: 480px;
 }
 
 /* ---------- Where it works ---------- */
 
 .w-where {
-    background: var(--bg);
-    border: 1px solid var(--rule);
-    border-radius: var(--r-3);
-    padding: 16px 20px;
-    margin-bottom: 24px;
-    box-shadow: var(--shadow-1);
+    margin-bottom: 28px;
 }
 
 .w-where .eyebrow {
     margin: 0 0 8px;
-    color: var(--fg-muted);
+    display: block;
 }
 
 .w-where ul {
     margin: 0;
-    padding-left: 0;
-    list-style: none;
+    padding-left: 18px;
+    list-style: disc;
 }
 
 .w-where li {
-    font-size: 13px;
+    font-size: 13.5px;
+    line-height: 1.6;
     color: var(--fg);
-    padding: 3px 0 3px 18px;
-    position: relative;
 }
 
-.w-where li::before {
-    content: "";
-    position: absolute;
-    left: 0;
-    top: 11px;
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: var(--accent);
-    opacity: 0.6;
+.w-where li::marker {
+    color: var(--fg-subtle);
 }
 
 /* ---------- Steps ---------- */
@@ -90,51 +74,43 @@ body {
 .w-steps {
     list-style: none;
     padding: 0;
-    margin: 0 0 24px;
+    margin: 0 0 28px;
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 0;
 }
 
 .w-step {
     display: flex;
     gap: 14px;
-    background: var(--bg);
-    border: 1px solid var(--rule);
-    border-radius: var(--r-3);
-    padding: 18px 20px;
-    box-shadow: var(--shadow-1);
+    padding: 18px 0;
+    border-top: 1px solid var(--rule);
 }
 
-.w-step.complete {
-    border-color: var(--ok);
-    background: linear-gradient(
-        to right,
-        color-mix(in srgb, var(--ok) 6%, transparent),
-        var(--bg) 40%
-    );
+.w-step:last-child {
+    border-bottom: 1px solid var(--rule);
 }
 
 .w-step-icon {
     flex-shrink: 0;
-    width: 28px;
-    height: 28px;
+    width: 24px;
+    height: 24px;
     border-radius: 50%;
-    background: var(--bg-sunk);
+    background: var(--bg);
     border: 1px solid var(--rule-strong);
     display: flex;
     align-items: center;
     justify-content: center;
     font-family: var(--font-mono);
-    font-size: 12px;
+    font-size: 11.5px;
     color: var(--fg-muted);
     font-weight: 600;
     position: relative;
 }
 
 .w-step.complete .w-step-icon {
-    background: var(--ok);
-    border-color: var(--ok);
+    background: var(--fg);
+    border-color: var(--fg);
 }
 
 .w-step.complete .w-num {
@@ -143,16 +119,17 @@ body {
 
 .w-step.complete .w-check {
     display: inline !important;
-    color: white;
-    font-size: 14px;
+    color: var(--bg);
+    font-size: 13px;
+    line-height: 1;
 }
 
 .w-spinner {
-    width: 14px;
-    height: 14px;
+    width: 12px;
+    height: 12px;
     border-radius: 50%;
-    border: 2px solid var(--rule-strong);
-    border-top-color: var(--accent);
+    border: 1.5px solid var(--rule-strong);
+    border-top-color: var(--fg);
     animation: spin 0.8s linear infinite;
 }
 
@@ -177,14 +154,14 @@ body {
 }
 
 .w-step-label {
-    font-size: 14px;
+    font-size: 14.5px;
     font-weight: 600;
     color: var(--fg);
-    margin-bottom: 4px;
+    margin-bottom: 3px;
 }
 
 .w-step-detail {
-    font-size: 13px;
+    font-size: 13.5px;
     line-height: 1.55;
     color: var(--fg-muted);
     margin: 0 0 8px;
@@ -202,34 +179,34 @@ body {
     margin-top: 10px;
 }
 
-/* ---------- Provider sub-options ---------- */
+/* ---------- Provider box ---------- */
 
 .w-providerbox {
     margin-top: 10px;
-    padding: 14px;
-    background: var(--bg-sunk);
+    padding: 14px 16px;
     border: 1px solid var(--rule);
-    border-radius: var(--r-2);
+    border-radius: var(--r-3);
+    background: var(--bg-sunk);
 }
 
 .w-providerbox h4 {
-    font-size: 12.5px;
+    font-size: 13px;
     font-weight: 600;
     margin: 0 0 6px;
     color: var(--fg);
 }
 
 .w-providerbox p {
-    font-size: 12.5px;
+    font-size: 13px;
     line-height: 1.5;
     color: var(--fg-muted);
     margin: 0 0 10px;
 }
 
 .w-providerbox ol {
-    margin: 0 0 10px;
+    margin: 0 0 12px;
     padding-left: 18px;
-    font-size: 12.5px;
+    font-size: 13px;
     line-height: 1.55;
     color: var(--fg-muted);
 }
@@ -239,78 +216,60 @@ body {
 }
 
 .w-providerbox a {
-    color: var(--accent);
+    color: var(--fg);
     font-weight: 500;
 }
 
 .w-providerbox input[type="password"] {
     margin-bottom: 8px;
+    background: var(--bg);
 }
 
 .w-providerbox-status {
-    font-size: 11.5px;
+    font-size: 12px;
     color: var(--ok);
     font-weight: 500;
     margin-left: 8px;
 }
 
-/* ---------- Pin illustration ---------- */
-
-.w-pin-illo {
-    margin-top: 10px;
-    max-width: 240px;
-}
-
-.w-pin-illo svg {
-    width: 100%;
-    height: auto;
-    display: block;
-}
-
 /* ---------- Try it ---------- */
 
 .w-how {
-    margin: 6px 0 14px;
-    padding-left: 0;
-    list-style: none;
+    margin: 8px 0 14px;
+    padding-left: 18px;
+    list-style: disc;
 }
 
 .w-how li {
-    font-size: 13px;
-    color: var(--fg);
-    padding: 3px 0 3px 16px;
-    position: relative;
+    font-size: 13.5px;
     line-height: 1.55;
+    color: var(--fg);
+    margin-bottom: 4px;
 }
 
-.w-how li::before {
-    content: "›";
-    position: absolute;
-    left: 0;
-    color: var(--accent);
-    font-weight: 600;
+.w-how li::marker {
+    color: var(--fg-subtle);
 }
 
 .w-how em {
-    background: var(--accent-soft);
-    color: var(--fg);
-    padding: 1px 5px;
-    border-radius: var(--r-1);
     font-style: normal;
-    font-weight: 500;
+    font-weight: 600;
+}
+
+.w-how kbd {
+    margin: 0 2px;
 }
 
 .w-try {
-    margin-top: 12px;
-    padding: 14px;
-    background: var(--bg-sunk);
+    margin-top: 14px;
+    padding: 14px 16px;
     border: 1px solid var(--rule);
-    border-radius: var(--r-2);
+    border-radius: var(--r-3);
+    background: var(--bg-sunk);
 }
 
 .w-try-eyebrow {
     margin: 0 0 8px;
-    color: var(--fg-muted);
 }
 
 .w-try-passage {
@@ -318,7 +277,7 @@ body {
     line-height: 1.55;
     color: var(--fg);
     margin: 0 0 12px;
-    padding: 12px;
+    padding: 12px 14px;
     background: var(--bg);
     border: 1px solid var(--rule);
     border-radius: var(--r-2);
@@ -328,35 +287,31 @@ body {
 /* ---------- All set ---------- */
 
 .w-allset {
-    background: var(--bg);
-    border: 1px solid var(--ok);
-    border-radius: var(--r-3);
-    padding: 18px 22px;
+    padding: 18px 20px;
     margin-bottom: 24px;
-    box-shadow: var(--shadow-1);
+    border: 1px solid var(--fg);
+    border-radius: var(--r-3);
+    background: var(--bg);
 }
 
 .w-allset-title {
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 600;
-    color: var(--ok);
+    color: var(--fg);
     margin: 0 0 6px;
 }
 
 .w-allset-body {
-    font-size: 13px;
+    font-size: 13.5px;
     line-height: 1.55;
-    color: var(--fg);
+    color: var(--fg-muted);
     margin: 0 0 12px;
 }
 
 .w-allset-body em {
-    background: var(--accent-soft);
-    color: var(--fg);
-    padding: 1px 5px;
-    border-radius: var(--r-1);
     font-style: normal;
-    font-weight: 500;
+    font-weight: 600;
+    color: var(--fg);
 }
 
 .w-allset-actions {
@@ -374,27 +329,26 @@ body {
     flex-wrap: wrap;
     gap: 16px;
     align-items: center;
-    font-size: 11.5px;
+    font-size: 12px;
     color: var(--fg-subtle);
 }
 
 .w-footer a {
     color: var(--fg-muted);
-    border-bottom: 1px solid transparent;
+    text-decoration: none;
 }
 
 .w-footer a:hover {
     color: var(--fg);
-    border-bottom-color: var(--fg-muted);
+    text-decoration: underline;
 }
 
 .w-footer code {
     font-family: var(--font-mono);
-    font-size: 11px;
+    font-size: 11.5px;
     background: var(--bg-sunk);
     padding: 1px 5px;
     border-radius: var(--r-1);
-    border: 1px solid var(--rule);
     color: var(--fg-muted);
 }
 
