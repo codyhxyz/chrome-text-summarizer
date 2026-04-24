@@ -8,11 +8,11 @@ All copy below is ready to paste into the CWS dashboard at
 ## Name
 
 ```
-Summarizer — quick summaries of anything you read
+Webpage Summarizer — on-device summaries of any article or PDF
 ```
 
 > Keep the CWS store name under 75 chars. The manifest-level name
-> (`AI Text Summarizer`) does not need to match — the store name is
+> (`Webpage Summarizer`) does not need to match — the store name is
 > what users see in the tile.
 
 ## Short description (max 132 chars)

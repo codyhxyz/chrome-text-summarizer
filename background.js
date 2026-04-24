@@ -1,5 +1,5 @@
 /* ============================================================
- * AI Text Summarizer — service worker.
+ * Webpage Summarizer — service worker.
  * Default: on-device Gemini Nano (Summarizer API, Chrome 138+).
  * Fallback: cloud Gemini 1.5 Pro via BYOK.
  * Streaming both paths. AbortController cancel. Length control.
