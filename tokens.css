@@ -120,10 +120,7 @@ body {
     height: 100%;
 }
 
-.brand-mark .stripe-accent {
-    fill: var(--accent);
-}
-
+.brand-mark .stripe-accent,
 .brand-mark .stripe-fg {
     fill: currentColor;
 }
