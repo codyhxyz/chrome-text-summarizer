@@ -49,30 +49,7 @@
     --trans: 100ms linear;
 }
 
-@media (prefers-color-scheme: dark) {
-    :root {
-        --bg: #0a0a0a;
-        --bg-elev: #0a0a0a;
-        --bg-sunk: #1a1a1a;
-        --fg: #eeeeee;
-        --fg-muted: #999999;
-        --fg-subtle: #666666;
-        --rule: #262626;
-        --rule-strong: #3a3a3a;
-
-        --accent: var(--fg);
-        --accent-hover: #ffffff;
-        --accent-soft: #1a1a1a;
-        --accent-on: #0a0a0a;
-
-        --ok: #3dba5c;
-        --warn: #e0a040;
-        --danger: #e05858;
-        --danger-soft: rgba(224, 88, 88, 0.12);
-
-        --selection: #333333;
-    }
-}
+/* No dark mode. White bg + black fg everywhere. */
 
 /* ========== Base ========== */
 
@@ -88,6 +65,7 @@ body {
     padding: 0;
     background: var(--bg);
     color: var(--fg);
+    color-scheme: light;
     font-family: var(--font-sans);
     font-size: 14px;
     line-height: 1.5;
