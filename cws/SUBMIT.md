@@ -59,16 +59,17 @@ From `cws/LISTING.md`, fill in:
 - [ ] Upload shot2–shot5 in order
 - [ ] Confirm all 5 are 1280×800 (CWS re-rejects off-spec sizes)
 
-### C.4 — Promo images (optional but recommended)
+### C.4 — Promo images
 
-CWS allows three promotional images. The store badges your listing
-more prominently if you provide them.
+Both rendered. Drop them in the dashboard:
 
-- Small promo tile: 440×280. Re-crop shot1 to that aspect, or build
-  a new composition. _Not generated yet — skip or build in a second
-  pass._
-- Marquee: 1400×560. Optional, only shown if chosen for featured.
-  _Skip for v1.1.0._
+- [ ] **Small promo tile (440×280)** — `cws/promo/small.png`
+- [ ] **Marquee promo (1400×560)** — `cws/promo/marquee.png`
+      (only shown if Google features the listing, but takes one
+      minute to upload)
+
+Edit `cws/promo/{small,marquee}.html` and re-run
+`cws/promo/render.sh` to regenerate after any tweaks.
 
 ### C.5 — Privacy
 
