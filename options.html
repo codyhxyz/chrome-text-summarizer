@@ -1,52 +1,77 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
     <head>
-        <title>AI Text Summarizer Options</title>
-        <style>
-            body {
-                font-family: sans-serif;
-                padding: 20px;
-                min-width: 300px;
-            }
-            label {
-                display: block;
-                margin-bottom: 5px;
-                font-weight: bold;
-            }
-            input[type="text"],
-            input[type="password"] {
-                width: 95%;
-                padding: 8px;
-                margin-bottom: 15px;
-                border: 1px solid #ccc;
-                border-radius: 4px;
-            }
-            button {
-                padding: 10px 15px;
-                background-color: #007bff;
-                color: white;
-                border: none;
-                border-radius: 4px;
-                cursor: pointer;
-            }
-            button:hover {
-                background-color: #0056b3;
-            }
-            #status {
-                margin-top: 15px;
-                font-size: 0.9em;
-                color: green;
-            }
-        </style>
+        <meta charset="UTF-8" />
+        <title>Summarizer · Options</title>
+        <link rel="stylesheet" href="tokens.css" />
+        <link rel="stylesheet" href="options.css" />
     </head>
     <body>
-        <h2>AI Text Summarizer Settings</h2>
+        <main class="o-main">
+            <header class="o-header">
+                <span class="brand-mark" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="3" y="6" width="18" height="2.6" rx="1.3" class="stripe-fg"/>
+                        <rect x="3" y="11" width="13" height="2.6" rx="1.3" class="stripe-fg"/>
+                        <rect x="3" y="16" width="8" height="2.6" rx="1.3" class="stripe-accent"/>
+                    </svg>
+                </span>
+                <div>
+                    <p class="eyebrow">Summarizer</p>
+                    <h1 class="o-title">Settings</h1>
+                </div>
+            </header>
 
-        <label for="api-key">Gemini API Key:</label>
-        <input type="password" id="api-key" placeholder="Enter your API key" />
+            <section class="o-card">
+                <p class="eyebrow">Provider status</p>
+                <div class="o-row">
+                    <span class="dot" id="o-dot" data-state="off"></span>
+                    <div>
+                        <p class="o-label" id="o-provider-label">Checking…</p>
+                        <p class="o-sub" id="o-provider-sub"></p>
+                    </div>
+                </div>
+            </section>
 
-        <button id="save-button">Save Key</button>
-        <div id="status"></div>
+            <section class="o-card">
+                <p class="eyebrow">Cloud fallback · Gemini API key</p>
+                <p class="o-body">
+                    Used only when on-device Nano isn't available. Stored in
+                    <code>chrome.storage.local</code> on this device.
+                    <a href="https://aistudio.google.com/app/apikey" target="_blank"
+                        >Get a key from Google AI Studio</a
+                    >.
+                </p>
+                <input
+                    type="password"
+                    id="o-api-key"
+                    placeholder="Paste API key"
+                    autocomplete="off"
+                />
+                <div class="o-actions">
+                    <button class="primary" id="o-save">Save key</button>
+                    <button class="ghost" id="o-delete">Delete key</button>
+                    <span class="o-status" id="o-status"></span>
+                </div>
+            </section>
+
+            <section class="o-card">
+                <p class="eyebrow">Custom prompt</p>
+                <p class="o-body">
+                    Applied only to the cloud fallback. The on-device
+                    Summarizer API uses a fixed format controlled by the length
+                    selector in the side panel.
+                </p>
+                <textarea
+                    id="o-prompt"
+                    rows="3"
+                    placeholder="Summarize the following text:"
+                ></textarea>
+                <p class="o-status" id="o-prompt-status"></p>
+            </section>
+
+            <footer class="o-footer eyebrow">v1.1.0</footer>
+        </main>
 
         <script src="options.js"></script>
     </body>

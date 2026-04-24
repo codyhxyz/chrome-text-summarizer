@@ -1,11 +1,18 @@
 {
     "manifest_version": 3,
     "name": "AI Text Summarizer",
-    "version": "1.0",
-    "description": "Right-click selected text to summarize it using Gemini.",
-    "permissions": ["contextMenus", "storage", "sidePanel"],
+    "version": "1.1.0",
+    "description": "Read less. Get the gist of any article, PDF, or page in a click.",
+    "permissions": [
+        "contextMenus",
+        "storage",
+        "sidePanel",
+        "scripting",
+        "activeTab"
+    ],
     "host_permissions": [
-        "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro-latest:generateContent"
+        "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro-latest:generateContent",
+        "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro-latest:streamGenerateContent"
     ],
     "background": {
         "service_worker": "background.js"
@@ -26,5 +33,14 @@
     "options_page": "options.html",
     "side_panel": {
         "default_path": "sidepanel.html"
+    },
+    "commands": {
+        "summarize-selection": {
+            "suggested_key": {
+                "default": "Ctrl+Shift+S",
+                "mac": "Command+Shift+S"
+            },
+            "description": "Summarize the current text selection"
+        }
     }
 }

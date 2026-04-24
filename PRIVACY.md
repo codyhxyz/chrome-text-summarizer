@@ -1,41 +1,62 @@
-# Privacy Policy for AI Text Summarizer Chrome Extension
+# Privacy Policy for Summarizer
 
-**Last Updated:** April 17, 2025
+**Last Updated:** April 24, 2026
 
-This Privacy Policy describes how the AI Text Summarizer Chrome Extension ("the Extension") handles your information.
+This Privacy Policy describes how the **Summarizer** Chrome extension ("the
+Extension") handles your information.
 
-## Information We Collect
+## Short version
 
-The Extension processes the following information:
+- **On-device by default.** When Chrome's built-in Gemini Nano is available,
+  the text you select never leaves your machine.
+- **Cloud only when you opt in.** If on-device isn't available, the Extension
+  uses Google's Gemini API — but only after you add your own API key.
+- **No analytics. No tracking. No third-party scripts. No remote fonts.**
 
-1.  **Selected Text:** When you use the Extension to summarize text, the specific text content you select on a webpage is sent to the Google Gemini API for processing.
-2.  **Custom Prompt:** If you customize the prompt used for summarization, that prompt text is saved using Chrome's storage (`chrome.storage.sync`) so it can be reused in future sessions.
-3.  **API Key:** Your Google Gemini API key is stored locally on your device using Chrome's storage (`chrome.storage.local`) to authenticate your requests to the Gemini API.
+## What the Extension processes
 
-## How We Use Information
+| Data | Where it goes | Storage |
+|------|---------------|---------|
+| **Selected text** (the passage you ask to summarize) | On-device Nano: stays local. Cloud Gemini: sent to `generativelanguage.googleapis.com` over HTTPS. | Not persisted by the Extension. Held briefly in `chrome.storage.local` while the side panel renders, then overwritten on the next summary. |
+| **Custom prompt** | Cloud-only feature. Sent alongside selected text to Gemini API when used. | `chrome.storage.sync` — may sync across your signed-in Chrome browsers. |
+| **Gemini API key** (if you add one) | Sent only to `generativelanguage.googleapis.com` to authenticate Gemini API requests. Never transmitted elsewhere. | `chrome.storage.local` on the device where you saved it. Delete it any time from the Settings page. |
+| **PDF handoff payload** (selected text from a PDF, when the side panel can't open) | Held in `chrome.storage.session` (in-memory, cleared on browser close) just long enough to render in the fallback tab. | Cleared immediately after the fallback tab consumes it. |
+| **Length preference** (short/medium/long) | Local only. | `chrome.storage.local`. |
 
-*   **Selected Text and Custom Prompt:** This information is sent directly to the Google Gemini API solely for the purpose of generating the text summary you requested. The Extension itself does not store this selected text or the generated summaries after the summarization process is complete and displayed.
-*   **API Key:** Your API key is used only to authenticate your requests with the Google Gemini API. It is stored locally and is not transmitted anywhere else.
+## Third-party services
 
-## Information Storage
+The Extension talks to one external service, and only when you've opted into
+cloud mode by adding an API key:
 
-*   **Selected Text/Summaries:** Not stored persistently by the Extension.
-*   **Custom Prompt:** Stored using `chrome.storage.sync`, which may sync across your logged-in Chrome browsers.
-*   **API Key:** Stored using `chrome.storage.local` only on the device where you save it.
+- **Google Gemini API** (`generativelanguage.googleapis.com`) — receives your
+  selected text, the custom prompt, and your API key. Subject to
+  [Google's Privacy Policy](https://policies.google.com/privacy).
 
-## Third-Party Services
+When you're using on-device Gemini Nano, **no network requests are made** for
+summarization.
 
-The Extension relies on the Google Gemini API to provide its core summarization functionality. Information sent to the Google Gemini API (selected text, prompt, API key) is subject to Google's Privacy Policy. We recommend reviewing Google's policy for details on how they handle data.
+## Data sharing
 
-## Data Sharing
+We don't share, sell, or transmit your data to anyone other than Google's
+Gemini API in the case described above. There are no analytics endpoints, no
+crash reporters, no telemetry.
 
-We do not share your API key, custom prompt, or selected text with any third parties other than Google for the purpose of generating summaries as described above.
+## Permissions, in plain language
 
-## Changes to This Policy
+- `contextMenus` — adds the right-click "Summarize selection" item.
+- `storage` — saves your prompt, length preference, and API key locally.
+- `sidePanel` — opens the summary in Chrome's side panel.
+- `scripting` + `activeTab` — only on keyboard-shortcut press, reads the
+  currently selected text from the active tab. No background page reading.
+- `host_permissions` for `generativelanguage.googleapis.com` — only used when
+  you've added an API key. The Extension cannot reach any other host.
 
-We may update this Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy in the extension's repository or description.
+## Changes to this policy
 
-## Contact Us
+We may update this Policy as the Extension evolves. The current version always
+lives at the top of this file, with the "Last Updated" date.
 
-If you have any questions about this Privacy Policy, please open an issue on our GitHub repository:
-[https://github.com/ydoc5212/chrome-text-summarizer/issues](https://github.com/ydoc5212/chrome-text-summarizer/issues) 
+## Contact
+
+Questions or concerns: open an issue at
+[github.com/codyhxyz/chrome-text-summarizer/issues](https://github.com/codyhxyz/chrome-text-summarizer/issues).

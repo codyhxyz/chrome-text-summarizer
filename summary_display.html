@@ -1,56 +1,72 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
     <head>
         <meta charset="UTF-8" />
-        <title>Summary Result</title>
-        <style>
-            body {
-                font-family: sans-serif;
-                padding: 15px;
-            }
-            h3 {
-                border-bottom: 1px solid #ccc;
-                padding-bottom: 5px;
-                margin-top: 20px;
-            }
-            #original-text-content,
-            #summary-content {
-                background-color: #f9f9f9;
-                border: 1px solid #ddd;
-                padding: 10px;
-                margin-top: 5px;
-                white-space: pre-wrap; /* Preserve line breaks */
-                word-wrap: break-word; /* Wrap long words */
-                max-height: 300px;
-                overflow-y: auto;
-            }
-            .error {
-                color: red;
-                font-weight: bold;
-            }
-        </style>
+        <title>Summary</title>
+        <link rel="stylesheet" href="tokens.css" />
+        <link rel="stylesheet" href="summary_display.css" />
     </head>
     <body>
-        <h1>AI Text Summarizer Result</h1>
+        <header class="sd-top">
+            <div class="sd-brand">
+                <span class="brand-mark" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="3" y="6" width="18" height="2.6" rx="1.3" class="stripe-fg"/>
+                        <rect x="3" y="11" width="13" height="2.6" rx="1.3" class="stripe-fg"/>
+                        <rect x="3" y="16" width="8" height="2.6" rx="1.3" class="stripe-accent"/>
+                    </svg>
+                </span>
+                <span class="eyebrow">Summarizer</span>
+            </div>
+            <div class="status">
+                <span class="dot" id="status-dot" data-state="off"></span>
+                <span class="eyebrow" id="status-label">Idle</span>
+            </div>
+        </header>
 
-        <h3>Original Text</h3>
-        <div id="original-text-content">(Loading original text...)</div>
+        <main class="sd-main">
+            <section class="sd-column">
+                <div class="sd-head">
+                    <p class="eyebrow">
+                        <span id="provider-label">Summary</span>
+                    </p>
+                    <div class="seg" role="group" aria-label="Summary length">
+                        <button data-length="short" aria-pressed="false">
+                            Short
+                        </button>
+                        <button data-length="medium" aria-pressed="true">
+                            Medium
+                        </button>
+                        <button data-length="long" aria-pressed="false">
+                            Long
+                        </button>
+                    </div>
+                </div>
 
-        <h3>Prompt</h3>
-        <textarea
-            id="prompt-input"
-            rows="4"
-            style="width: 95%; margin-bottom: 5px"
-        ></textarea>
-        <button id="summarize-button">Summarize with this Prompt</button>
-        <div
-            id="prompt-save-status"
-            style="font-size: 0.8em; color: green; margin-top: 5px; height: 1em"
-        ></div>
+                <article class="prose" id="summary-content"></article>
 
-        <h3>Summary</h3>
-        <div id="summary-content">(Loading summary...)</div>
+                <div class="error-card hidden" id="error-card">
+                    <p class="eyebrow error-eyebrow">Something went wrong</p>
+                    <p class="error-message" id="error-message"></p>
+                    <div class="error-actions" id="error-actions"></div>
+                </div>
 
+                <div class="sd-actions">
+                    <button class="ghost" id="btn-copy" disabled>Copy</button>
+                    <button class="primary hidden" id="btn-stop">Stop</button>
+                    <button class="ghost" id="btn-regenerate">
+                        Regenerate
+                    </button>
+                </div>
+
+                <details class="source" open>
+                    <summary class="eyebrow">Source</summary>
+                    <p class="source-text" id="original-text"></p>
+                </details>
+            </section>
+        </main>
+
+        <script src="ui.js"></script>
         <script src="summary_display.js"></script>
     </body>
 </html>

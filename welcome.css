@@ -1,0 +1,403 @@
+/* ============================================================
+ * Welcome / onboarding page.
+ * ============================================================ */
+
+body {
+    min-height: 100vh;
+    background: var(--bg-sunk);
+}
+
+.w-main {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 56px 28px 40px;
+}
+
+/* ---------- Header ---------- */
+
+.w-header {
+    text-align: left;
+    margin-bottom: 32px;
+}
+
+.w-header .brand-mark {
+    width: 44px;
+    height: 44px;
+    margin-bottom: 18px;
+}
+
+.w-title {
+    font-family: var(--font-sans);
+    font-size: 28px;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    font-weight: 600;
+    margin: 0 0 10px;
+    color: var(--fg);
+}
+
+.w-lead {
+    font-size: 16px;
+    line-height: 1.5;
+    color: var(--fg-muted);
+    margin: 0;
+    max-width: 480px;
+}
+
+/* ---------- Where it works ---------- */
+
+.w-where {
+    background: var(--bg);
+    border: 1px solid var(--rule);
+    border-radius: var(--r-3);
+    padding: 16px 20px;
+    margin-bottom: 24px;
+    box-shadow: var(--shadow-1);
+}
+
+.w-where .eyebrow {
+    margin: 0 0 8px;
+    color: var(--fg-muted);
+}
+
+.w-where ul {
+    margin: 0;
+    padding-left: 0;
+    list-style: none;
+}
+
+.w-where li {
+    font-size: 13px;
+    color: var(--fg);
+    padding: 3px 0 3px 18px;
+    position: relative;
+}
+
+.w-where li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 11px;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    opacity: 0.6;
+}
+
+/* ---------- Steps ---------- */
+
+.w-steps {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.w-step {
+    display: flex;
+    gap: 14px;
+    background: var(--bg);
+    border: 1px solid var(--rule);
+    border-radius: var(--r-3);
+    padding: 18px 20px;
+    box-shadow: var(--shadow-1);
+}
+
+.w-step.complete {
+    border-color: var(--ok);
+    background: linear-gradient(
+        to right,
+        color-mix(in srgb, var(--ok) 6%, transparent),
+        var(--bg) 40%
+    );
+}
+
+.w-step-icon {
+    flex-shrink: 0;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--bg-sunk);
+    border: 1px solid var(--rule-strong);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--fg-muted);
+    font-weight: 600;
+    position: relative;
+}
+
+.w-step.complete .w-step-icon {
+    background: var(--ok);
+    border-color: var(--ok);
+}
+
+.w-step.complete .w-num {
+    display: none;
+}
+
+.w-step.complete .w-check {
+    display: inline !important;
+    color: white;
+    font-size: 14px;
+}
+
+.w-spinner {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 2px solid var(--rule-strong);
+    border-top-color: var(--accent);
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.w-step.checking .w-num,
+.w-step.checking .w-check {
+    display: none;
+}
+
+.w-step.checking .w-spinner {
+    display: inline-block !important;
+}
+
+.w-step-body {
+    flex: 1;
+    min-width: 0;
+}
+
+.w-step-label {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--fg);
+    margin-bottom: 4px;
+}
+
+.w-step-detail {
+    font-size: 13px;
+    line-height: 1.55;
+    color: var(--fg-muted);
+    margin: 0 0 8px;
+}
+
+.w-step-detail strong {
+    color: var(--fg);
+    font-weight: 600;
+}
+
+.w-step-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+/* ---------- Provider sub-options ---------- */
+
+.w-providerbox {
+    margin-top: 10px;
+    padding: 14px;
+    background: var(--bg-sunk);
+    border: 1px solid var(--rule);
+    border-radius: var(--r-2);
+}
+
+.w-providerbox h4 {
+    font-size: 12.5px;
+    font-weight: 600;
+    margin: 0 0 6px;
+    color: var(--fg);
+}
+
+.w-providerbox p {
+    font-size: 12.5px;
+    line-height: 1.5;
+    color: var(--fg-muted);
+    margin: 0 0 10px;
+}
+
+.w-providerbox ol {
+    margin: 0 0 10px;
+    padding-left: 18px;
+    font-size: 12.5px;
+    line-height: 1.55;
+    color: var(--fg-muted);
+}
+
+.w-providerbox ol li {
+    margin-bottom: 4px;
+}
+
+.w-providerbox a {
+    color: var(--accent);
+    font-weight: 500;
+}
+
+.w-providerbox input[type="password"] {
+    margin-bottom: 8px;
+}
+
+.w-providerbox-status {
+    font-size: 11.5px;
+    color: var(--ok);
+    font-weight: 500;
+    margin-left: 8px;
+}
+
+/* ---------- Pin illustration ---------- */
+
+.w-pin-illo {
+    margin-top: 10px;
+    max-width: 240px;
+}
+
+.w-pin-illo svg {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* ---------- Try it ---------- */
+
+.w-how {
+    margin: 6px 0 14px;
+    padding-left: 0;
+    list-style: none;
+}
+
+.w-how li {
+    font-size: 13px;
+    color: var(--fg);
+    padding: 3px 0 3px 16px;
+    position: relative;
+    line-height: 1.55;
+}
+
+.w-how li::before {
+    content: "›";
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+    font-weight: 600;
+}
+
+.w-how em {
+    background: var(--accent-soft);
+    color: var(--fg);
+    padding: 1px 5px;
+    border-radius: var(--r-1);
+    font-style: normal;
+    font-weight: 500;
+}
+
+.w-try {
+    margin-top: 12px;
+    padding: 14px;
+    background: var(--bg-sunk);
+    border: 1px solid var(--rule);
+    border-radius: var(--r-2);
+}
+
+.w-try-eyebrow {
+    margin: 0 0 8px;
+    color: var(--fg-muted);
+}
+
+.w-try-passage {
+    font-size: 13.5px;
+    line-height: 1.55;
+    color: var(--fg);
+    margin: 0 0 12px;
+    padding: 12px;
+    background: var(--bg);
+    border: 1px solid var(--rule);
+    border-radius: var(--r-2);
+    user-select: text;
+}
+
+/* ---------- All set ---------- */
+
+.w-allset {
+    background: var(--bg);
+    border: 1px solid var(--ok);
+    border-radius: var(--r-3);
+    padding: 18px 22px;
+    margin-bottom: 24px;
+    box-shadow: var(--shadow-1);
+}
+
+.w-allset-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--ok);
+    margin: 0 0 6px;
+}
+
+.w-allset-body {
+    font-size: 13px;
+    line-height: 1.55;
+    color: var(--fg);
+    margin: 0 0 12px;
+}
+
+.w-allset-body em {
+    background: var(--accent-soft);
+    color: var(--fg);
+    padding: 1px 5px;
+    border-radius: var(--r-1);
+    font-style: normal;
+    font-weight: 500;
+}
+
+.w-allset-actions {
+    display: flex;
+    gap: 8px;
+}
+
+/* ---------- Footer ---------- */
+
+.w-footer {
+    margin-top: 32px;
+    padding-top: 16px;
+    border-top: 1px solid var(--rule);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    align-items: center;
+    font-size: 11.5px;
+    color: var(--fg-subtle);
+}
+
+.w-footer a {
+    color: var(--fg-muted);
+    border-bottom: 1px solid transparent;
+}
+
+.w-footer a:hover {
+    color: var(--fg);
+    border-bottom-color: var(--fg-muted);
+}
+
+.w-footer code {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    background: var(--bg-sunk);
+    padding: 1px 5px;
+    border-radius: var(--r-1);
+    border: 1px solid var(--rule);
+    color: var(--fg-muted);
+}
+
+.w-revoke {
+    margin-left: auto;
+}

@@ -1,34 +1,121 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
     <head>
-        <title>Text Summary</title>
-        <link rel="stylesheet" href="sidepanel.css" />
         <meta charset="UTF-8" />
+        <title>Summary</title>
+        <link rel="stylesheet" href="tokens.css" />
+        <link rel="stylesheet" href="sidepanel.css" />
     </head>
     <body>
-        <div id="prompt-container">
-            <h3>Prompt</h3>
-            <textarea id="prompt-input" rows="4" style="width: 95%"></textarea>
-            <p id="save-status" style="font-size: 0.8em; margin-top: 5px"></p>
-        </div>
-        <hr />
-        <div class="container">
-            <h2>Summary</h2>
-            <div id="summary-container">
-                <p id="loading-indicator">Loading summary...</p>
-                <p id="summary-content" class="hidden"></p>
-                <p id="error-message" class="hidden error"></p>
+        <header class="topbar">
+            <div class="brand">
+                <span class="brand-mark" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="3" y="6" width="18" height="2.6" rx="1.3" class="stripe-fg"/>
+                        <rect x="3" y="11" width="13" height="2.6" rx="1.3" class="stripe-fg"/>
+                        <rect x="3" y="16" width="8" height="2.6" rx="1.3" class="stripe-accent"/>
+                    </svg>
+                </span>
+                <span class="brand-name">Summarizer</span>
+            </div>
+            <div class="status" id="status">
+                <span class="dot" id="status-dot" data-state="off"></span>
+                <span class="eyebrow" id="status-label">Idle</span>
+            </div>
+        </header>
+
+        <main class="main">
+            <!-- EMPTY state -->
+            <section class="pane pane-empty" id="pane-empty">
+                <div class="empty-card">
+                    <p class="eyebrow">No selection yet</p>
+                    <h1 class="display">Pick a passage.</h1>
+                    <p class="lead">
+                        Select text on any page. Right-click and choose
+                        <em>Summarize selection</em>, or press
+                        <kbd id="kbd-hint">⌘⇧S</kbd>.
+                    </p>
+                    <p class="meta">
+                        Runs on-device by default via Gemini Nano. Falls back
+                        to the Gemini API when on-device isn't available.
+                    </p>
+                </div>
+            </section>
+
+            <!-- ACTIVE: streaming / done / error -->
+            <section class="pane pane-active hidden" id="pane-active">
+                <div class="eyebrow pane-eyebrow">
+                    <span id="provider-label">Summary</span>
+                    <span
+                        class="download-pill hidden"
+                        id="download-pill"
+                        aria-live="polite"
+                    ></span>
+                </div>
+
+                <article class="prose" id="summary-content"></article>
+
+                <div class="error-card hidden" id="error-card">
+                    <p class="eyebrow error-eyebrow">Something went wrong</p>
+                    <p class="error-message" id="error-message"></p>
+                    <div class="error-actions" id="error-actions"></div>
+                </div>
+
+                <details class="source">
+                    <summary class="eyebrow">Source</summary>
+                    <p class="source-text" id="original-text"></p>
+                </details>
+            </section>
+        </main>
+
+        <footer class="actionbar">
+            <div class="actionbar-row">
+                <div class="seg" role="group" aria-label="Summary length">
+                    <button
+                        type="button"
+                        data-length="short"
+                        aria-pressed="false"
+                    >
+                        Short
+                    </button>
+                    <button
+                        type="button"
+                        data-length="medium"
+                        aria-pressed="true"
+                    >
+                        Medium
+                    </button>
+                    <button
+                        type="button"
+                        data-length="long"
+                        aria-pressed="false"
+                    >
+                        Long
+                    </button>
+                </div>
+
+                <div class="actionbar-right">
+                    <button type="button" class="ghost" id="btn-copy" disabled>
+                        Copy
+                    </button>
+                    <button type="button" class="primary hidden" id="btn-stop">
+                        Stop
+                    </button>
+                </div>
             </div>
 
-            <hr />
+            <details class="prompt-collapsed">
+                <summary class="eyebrow">Custom prompt (cloud fallback)</summary>
+                <textarea
+                    id="prompt-input"
+                    rows="3"
+                    placeholder="Summarize the following text:"
+                ></textarea>
+                <p class="prompt-hint" id="prompt-hint"></p>
+            </details>
+        </footer>
 
-            <h3>Original Text</h3>
-            <div id="original-text-container">
-                <p id="original-text">
-                    (Select text on a page and right-click to summarize)
-                </p>
-            </div>
-        </div>
+        <script src="ui.js"></script>
         <script src="sidepanel.js"></script>
     </body>
 </html>

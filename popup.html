@@ -1,144 +1,61 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
     <head>
-        <title>AI Text Summarizer</title>
-        <link rel="stylesheet" href="popup.css" />
         <meta charset="UTF-8" />
-        <style>
-            /* Optional: Add minimal styles if needed */
-            body {
-                width: 200px;
-                padding: 10px;
-                text-align: center;
-            }
-        </style>
+        <title>Summarizer</title>
+        <link rel="stylesheet" href="tokens.css" />
+        <link rel="stylesheet" href="popup.css" />
     </head>
     <body>
-        <h3>AI Text Summarizer</h3>
-
-        <!-- Prompt Customization Section -->
-        <div style="margin-bottom: 15px">
-            <label
-                for="prompt-input"
-                style="display: block; margin-bottom: 5px; font-size: 0.9em"
-                >Custom Prompt:</label
-            >
-            <textarea
-                id="prompt-input"
-                rows="3"
-                style="
-                    width: 90%;
-                    padding: 5px;
-                    margin-bottom: 8px;
-                    font-size: 0.9em;
-                "
-            ></textarea>
-            <button
-                id="save-prompt-button"
-                style="padding: 5px 10px; font-size: 0.9em"
-            >
-                Save Prompt
-            </button>
-            <div
-                id="save-status"
-                style="font-size: 0.8em; margin-top: 8px; color: green"
-            ></div>
-        </div>
-
-        <div
-            style="
-                margin-top: 15px;
-                padding-top: 10px;
-                border-top: 1px solid #eee;
-            "
-        >
-            <label
-                for="popup-api-key"
-                style="display: block; margin-bottom: 5px; font-size: 0.9em"
-                >Gemini API Key:</label
-            >
-            <input
-                type="password"
-                id="popup-api-key"
-                placeholder="Enter API key"
-                style="
-                    width: 90%;
-                    padding: 5px;
-                    margin-bottom: 8px;
-                    font-size: 0.9em;
-                "
-            />
-            <button
-                id="popup-save-key"
-                style="padding: 5px 10px; font-size: 0.9em"
-            >
-                Save Key
-            </button>
-            <div
-                id="popup-status"
-                style="font-size: 0.8em; margin-top: 8px"
-            ></div>
-        </div>
-
-        <!-- Summary Display Section -->
-        <div
-            style="
-                margin-top: 15px;
-                padding-top: 10px;
-                border-top: 1px solid #eee;
-            "
-        >
-            <h4>Summary</h4>
-            <div id="loading-indicator">Loading summary...</div>
-            <div id="error-message" class="hidden" style="color: red"></div>
-            <div
-                id="summary-content"
-                class="hidden"
-                style="
-                    text-align: left;
-                    white-space: pre-wrap;
-                    max-height: 150px;
-                    overflow-y: auto;
-                    background-color: #f9f9f9;
-                    border: 1px solid #ddd;
-                    padding: 8px;
-                    margin-top: 5px;
-                "
-            ></div>
-        </div>
-
-        <!-- Original Text Display Section -->
-        <div
-            style="
-                margin-top: 15px;
-                padding-top: 10px;
-                border-top: 1px solid #eee;
-            "
-        >
-            <h4>Original Text</h4>
-            <div
-                id="original-text"
-                style="
-                    text-align: left;
-                    white-space: pre-wrap;
-                    max-height: 150px;
-                    overflow-y: auto;
-                    background-color: #f9f9f9;
-                    border: 1px solid #ddd;
-                    padding: 8px;
-                    margin-top: 5px;
-                "
-            >
-                (Select text on a page and use the context menu to summarize)
+        <header class="p-top">
+            <div class="p-brand">
+                <span class="brand-mark" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="3" y="6" width="18" height="2.6" rx="1.3" class="stripe-fg"/>
+                        <rect x="3" y="11" width="13" height="2.6" rx="1.3" class="stripe-fg"/>
+                        <rect x="3" y="16" width="8" height="2.6" rx="1.3" class="stripe-accent"/>
+                    </svg>
+                </span>
+                <span class="eyebrow">Summarizer</span>
             </div>
-        </div>
+        </header>
 
-        <!-- <p style="font-size: 0.9em;">
-            Settings available via <br/>
-            Extension Options.
-        </p> -->
-        <!-- No script needed for this simple version -->
+        <main class="p-main">
+            <div class="p-row">
+                <span class="dot" id="p-dot" data-state="off"></span>
+                <div class="p-status-text">
+                    <span class="eyebrow" id="p-status-label">Checking</span>
+                    <p class="p-detail" id="p-detail">…</p>
+                </div>
+            </div>
+
+            <p class="p-hint">
+                Select text on any page, then right-click
+                <em>Summarize selection</em> or press <kbd id="p-kbd">⌘⇧S</kbd>.
+            </p>
+
+            <section class="p-prompt">
+                <label class="eyebrow" for="p-prompt-input">
+                    Custom prompt
+                </label>
+                <p class="p-prompt-help">
+                    Used by the cloud Gemini fallback. On-device Nano uses
+                    its own format — pick length in the side panel.
+                </p>
+                <textarea
+                    id="p-prompt-input"
+                    rows="3"
+                    placeholder="Summarize the following text:"
+                ></textarea>
+                <p class="p-save-status" id="p-prompt-status"></p>
+            </section>
+
+            <div class="p-actions">
+                <button class="ghost" id="p-open-welcome">Re-run setup</button>
+                <button class="ghost" id="p-open-options">Settings</button>
+            </div>
+        </main>
+
         <script src="popup.js"></script>
-        <!-- Re-add script link -->
     </body>
 </html>

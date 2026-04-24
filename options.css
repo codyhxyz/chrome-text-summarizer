@@ -1,0 +1,118 @@
+/* ============================================================
+ * Options page — centered single column.
+ * ============================================================ */
+
+body {
+    min-height: 100vh;
+    background: var(--bg-sunk);
+}
+
+.o-main {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 40px 28px 32px;
+}
+
+.o-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 28px;
+}
+
+.o-header .brand-mark {
+    width: 36px;
+    height: 36px;
+}
+
+.o-header .eyebrow {
+    margin: 0 0 2px;
+    font-size: 11.5px;
+    color: var(--fg-muted);
+}
+
+.o-title {
+    font-family: var(--font-sans);
+    font-size: 22px;
+    letter-spacing: -0.015em;
+    font-weight: 600;
+    margin: 0;
+    color: var(--fg);
+}
+
+.o-card {
+    background: var(--bg);
+    border: 1px solid var(--rule);
+    border-radius: var(--r-3);
+    padding: 20px 22px;
+    margin-bottom: 16px;
+    box-shadow: var(--shadow-1);
+}
+
+.o-card .eyebrow {
+    margin: 0 0 12px;
+    color: var(--fg-muted);
+    font-size: 11.5px;
+    font-weight: 500;
+}
+
+.o-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.o-label {
+    font-size: 14px;
+    font-weight: 600;
+    margin: 0;
+    color: var(--fg);
+}
+
+.o-sub {
+    font-size: 12px;
+    color: var(--fg-muted);
+    margin: 2px 0 0;
+}
+
+.o-body {
+    font-size: 13px;
+    line-height: 1.55;
+    color: var(--fg-muted);
+    margin: 0 0 12px;
+}
+
+.o-body code {
+    font-family: var(--font-mono);
+    font-size: 0.9em;
+    background: var(--bg-sunk);
+    padding: 1px 5px;
+    border-radius: var(--r-1);
+    border: 1px solid var(--rule);
+}
+
+.o-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.o-status {
+    font-size: 11.5px;
+    color: var(--ok);
+    font-weight: 500;
+}
+
+textarea#o-prompt {
+    margin-top: 4px;
+}
+
+.o-footer {
+    margin-top: 28px;
+    padding-top: 14px;
+    border-top: 1px solid var(--rule);
+    color: var(--fg-subtle);
+    text-align: center;
+    font-size: 11px;
+}

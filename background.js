@@ -1,305 +1,468 @@
-// Placeholder for your Gemini API key - Now fetched from storage
-// const GEMINI_API_KEY = "YOUR_API_KEY_HERE"; // IMPORTANT: Replace with your actual key
-const GEMINI_API_URL =
-    "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro-latest:generateContent"; // Check for the correct endpoint
+/* ============================================================
+ * AI Text Summarizer — service worker.
+ * Default: on-device Gemini Nano (Summarizer API, Chrome 138+).
+ * Fallback: cloud Gemini 1.5 Pro via BYOK.
+ * Streaming both paths. AbortController cancel. Length control.
+ * State lives in chrome.storage.local; all UIs subscribe.
+ * ============================================================ */
 
-const DEFAULT_PROMPT = "Summarize the following text:"; // Define default prompt
+const GEMINI_STREAM_URL =
+    "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro-latest:streamGenerateContent";
 
-// Function to get API key from storage
+const DEFAULT_PROMPT = "Summarize the following text:";
+const DEFAULT_LENGTH = "medium"; // short | medium | long
+
+// Map our length tokens to Gemini maxOutputTokens and to prompt hints.
+const LENGTH_CONFIG = {
+    short: { maxTokens: 120, hint: "in 1–2 sentences" },
+    medium: { maxTokens: 320, hint: "in a short paragraph" },
+    long: { maxTokens: 700, hint: "in a detailed paragraph or bulleted list" },
+};
+
+// In-memory: the currently-running AbortController, keyed by sessionId.
+let activeController = null;
+let activeSessionId = null;
+
+// ---------- Storage helpers ----------
+
+function getLocal(keys) {
+    return new Promise((r) => chrome.storage.local.get(keys, r));
+}
+function setLocal(obj) {
+    return new Promise((r) => chrome.storage.local.set(obj, r));
+}
+function getSync(keys) {
+    return new Promise((r) => chrome.storage.sync.get(keys, r));
+}
+
 async function getApiKey() {
-    return new Promise((resolve) => {
-        chrome.storage.local.get(["geminiApiKey"], (result) => {
-            resolve(result.geminiApiKey);
-        });
-    });
+    const { geminiApiKey } = await getLocal(["geminiApiKey"]);
+    return geminiApiKey || null;
 }
 
-// Function to get Custom Prompt from sync storage
 async function getCustomPrompt() {
-    return new Promise((resolve) => {
-        chrome.storage.sync.get(["customPrompt"], (result) => {
-            resolve(result.customPrompt || DEFAULT_PROMPT);
-        });
-    });
+    const { customPrompt } = await getSync(["customPrompt"]);
+    return customPrompt || DEFAULT_PROMPT;
 }
 
-// Function to call the Gemini API
-async function summarizeTextWithGemini(text) {
-    const apiKey = await getApiKey();
-    const customPrompt = await getCustomPrompt(); // Get the custom or default prompt
+async function getLength() {
+    const { length } = await getLocal(["length"]);
+    return length && LENGTH_CONFIG[length] ? length : DEFAULT_LENGTH;
+}
 
-    if (!apiKey) {
-        console.error(
-            "Gemini API key not found in chrome.storage.local. Please set it."
-        );
-        // Instruct user on how to set it via console (for development)
-        console.info(
-            'To set the API key, open the service worker console and run: `chrome.storage.local.set({ geminiApiKey: "YOUR_KEY_HERE" }, () => { console.log("API Key Saved!"); });`'
-        );
-        return Promise.resolve(
-            "API Key not configured. Please set it via the service worker console."
-        );
-    }
+// ---------- State writer ----------
 
-    // Basic safety check for text length (adjust as needed)
-    if (!text || text.trim().length < 10) {
-        return Promise.resolve("Selected text is too short for summarization.");
-    }
+async function writeState(patch) {
+    const prev = await getLocal([
+        "selectedText",
+        "summaryText",
+        "status",
+        "errorKind",
+        "errorMessage",
+        "provider",
+        "length",
+        "sessionId",
+    ]);
+    await setLocal({ ...prev, ...patch });
+}
 
-    // Prepare the request body for Gemini API
-    // Consult the Gemini API documentation for the exact format
-    const requestBody = {
-        contents: [
-            {
-                parts: [
-                    {
-                        text: `${customPrompt}\n\n${text}`,
-                    },
-                ],
-            },
-        ],
-        // Add generationConfig if needed (e.g., temperature, max output tokens)
-        // generationConfig: {
-        //   temperature: 0.7,
-        //   maxOutputTokens: 250,
-        // }
-    };
+// ---------- Nano (Summarizer API) ----------
 
-    console.log("Sending request to Gemini API...");
+function hasSummarizerApi() {
+    // Chrome 138+ exposes the global `Summarizer` in extension pages and
+    // service workers. Older Chrome exposes under `ai.summarizer` (origin
+    // trial); we only check the stable global to keep the YAGNI line.
+    return typeof self !== "undefined" && typeof self.Summarizer !== "undefined";
+}
 
+async function nanoAvailability() {
+    if (!hasSummarizerApi()) return "unavailable";
     try {
-        const response = await fetch(
-            `${GEMINI_API_URL}?key=${apiKey}`, // Use the fetched key
-            {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(requestBody),
-            }
-        );
-
-        if (!response.ok) {
-            const errorBody = await response.text();
-            console.error("Gemini API Error Response:", errorBody);
-            throw new Error(
-                `API request failed with status ${response.status}: ${response.statusText}`
-            );
-        }
-
-        const data = await response.json();
-        console.log("Received response from Gemini API:", data);
-
-        // Extract the summary from the response
-        // Adjust this based on the actual Gemini API response structure
-        // Example assumes response.candidates[0].content.parts[0].text contains the summary
-        if (
-            data.candidates &&
-            data.candidates[0] &&
-            data.candidates[0].content &&
-            data.candidates[0].content.parts &&
-            data.candidates[0].content.parts[0]
-        ) {
-            return data.candidates[0].content.parts[0].text.trim();
-        } else {
-            console.error("Unexpected API response structure:", data);
-            return "Could not extract summary from API response.";
-        }
-    } catch (error) {
-        console.error("Error calling Gemini API:", error);
-        return `Error during summarization: ${error.message}`;
+        return await self.Summarizer.availability();
+    } catch (err) {
+        console.warn("[nano] availability() threw:", err);
+        return "unavailable";
     }
 }
 
-// Create Context Menu on Installation
-chrome.runtime.onInstalled.addListener(() => {
-    // Remove old menu item if it exists, in case the title changes
-    chrome.contextMenus.remove("summarizeSelection", () => {
-        // Check for an error during removal (e.g., item didn't exist)
-        if (chrome.runtime.lastError) {
-            // Optionally log that the item wasn't found, but don't treat it as a fatal error
-            console.log("Previous menu item not found, creating new one.");
-        } else {
-            // Log successful removal if needed
-            // console.log("Previous menu item removed.");
-        }
-
-        // Always attempt to create the new context menu item
-        chrome.contextMenus.create({
-            id: "summarizeSelection",
-            title: "AI Text Summarizer", // Simplified title
-            contexts: ["selection"],
-        });
-        console.log("Context menu created/updated.");
-    });
-});
-
-// Listener for Context Menu Click
-chrome.contextMenus.onClicked.addListener(async (info, tab) => {
-    if (info.menuItemId === "summarizeSelection" && info.selectionText) {
-        const selectedText = info.selectionText;
-        console.log("Selected Text:", selectedText);
-
-        // Determine target for side panel
-        let openConfig = null;
-        if (tab && tab.id && tab.id !== -1) {
-            openConfig = { tabId: tab.id };
-            console.log(`Attempting to open side panel for tabId: ${tab.id}`);
-        } else if (tab && tab.windowId) {
-            openConfig = { windowId: tab.windowId };
-            console.warn(
-                `tabId invalid (${tab.id}), attempting to open side panel for windowId: ${tab.windowId}`
-            );
-        } else {
-            console.error(
-                "Cannot open side panel, valid tab or window information is missing."
-            );
-            // Optional: Maybe notify the user via a different method if panel cannot open?
-            return; // Exit if we can't open the panel
-        }
-
-        // Helper function to open summary in a new tab
-        function openSummaryInNewTab(original, summary, error) {
-            const url = new URL(chrome.runtime.getURL("summary_display.html"));
-            url.searchParams.set(
-                "original",
-                encodeURIComponent(original || "")
-            );
-            if (error) {
-                url.searchParams.set("error", encodeURIComponent(error));
-            } else {
-                url.searchParams.set(
-                    "summary",
-                    encodeURIComponent(summary || "")
-                );
-            }
-
-            chrome.tabs.create({ url: url.toString() });
-
-            // Clear storage *after* opening tab to avoid race conditions
-            // and ensure the normal side panel doesn't pick this up.
-            chrome.storage.local.remove([
-                "selectedText",
-                "summaryText",
-                "isLoading",
-                "error",
-            ]);
-        }
-
-        // Try opening the side panel with the determined config
-        let sidePanelOpened = false;
-        try {
-            await chrome.sidePanel.open(openConfig);
-            console.log(
-                "Side panel open call succeeded with config:",
-                openConfig
-            );
-            sidePanelOpened = true;
-        } catch (error) {
-            // Error is expected in PDF context, log it but proceed to fallback
-            console.warn(
-                // Use warn instead of error for expected failures
-                "Failed to open side panel (expected for PDF/special pages):",
-                openConfig,
-                error,
-                "\nProceeding with new tab fallback."
-            );
-            // sidePanelOpened remains false
-        }
-
-        if (sidePanelOpened) {
-            // Side panel opened, store data for it to pick up
-            chrome.storage.local.set(
-                {
-                    selectedText: selectedText,
-                    summaryText: "Summarizing...",
-                    isLoading: true,
-                    error: null,
-                },
-                () => {
-                    console.log(
-                        "Selected text stored for side panel, starting summarization."
-                    );
-                    // Call the API function
-                    summarizeTextWithGemini(selectedText)
-                        .then((summary) => {
-                            console.log("Summary Received:", summary);
-                            // Store the result for side panel
-                            chrome.storage.local.set(
-                                {
-                                    summaryText: summary,
-                                    isLoading: false,
-                                },
-                                () => {
-                                    console.log(
-                                        "Summary stored for side panel."
-                                    );
-                                }
-                            );
-                        })
-                        .catch((error) => {
-                            console.error("Summarization failed:", error);
-                            chrome.storage.local.set(
-                                {
-                                    summaryText: "Failed to summarize.",
-                                    isLoading: false,
-                                    error:
-                                        error.message ||
-                                        "An unknown error occurred.",
-                                },
-                                () => {
-                                    console.log(
-                                        "Error state stored for side panel."
-                                    );
-                                }
-                            );
-                        });
-                }
-            );
-        } else {
-            // Side panel failed to open, likely PDF context.
-            // Open new tab immediately with original text, it will request summary.
-            console.log("[Fallback] Opening new tab for summary display.");
-            const url = new URL(chrome.runtime.getURL("summary_display.html"));
-            url.searchParams.set(
-                "original",
-                encodeURIComponent(selectedText || "")
-            );
-            chrome.tabs.create({ url: url.toString() });
-            // Do NOT store data in local storage for the fallback case
-        }
-    }
-});
-
-// Listener for messages from content scripts or other extension pages
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-    if (request.action === "getSummary" && request.textToSummarize) {
-        console.log(
-            "[Background] Received getSummary request from",
-            sender.tab ? "tab " + sender.tab.id : "extension page"
-        );
-        summarizeTextWithGemini(request.textToSummarize)
-            .then((summaryResult) => {
-                console.log(
-                    "[Background] Sending summary result back:",
-                    summaryResult
-                );
-                sendResponse({ result: summaryResult });
-            })
-            .catch((error) => {
-                // Catch unexpected errors during the API call itself
-                console.error(
-                    "[Background] Error during summarizeTextWithGemini for getSummary request:",
-                    error
-                );
-                sendResponse({
-                    error: `Background summarization failed: ${
-                        error.message || "Unknown error"
-                    }`,
+async function runNano({ text, length, signal, onChunk }) {
+    // Summarizer API supports type/length/format directly — no custom prompt.
+    const summarizer = await self.Summarizer.create({
+        type: "tldr",
+        length, // "short" | "medium" | "long"
+        format: "markdown",
+        monitor(m) {
+            m.addEventListener("downloadprogress", (e) => {
+                // e.loaded is 0..1 per spec.
+                writeState({
+                    downloadProgress: Math.round(e.loaded * 100),
                 });
             });
-        return true; // Indicates that the response is sent asynchronously
+        },
+    });
+
+    try {
+        const stream = summarizer.summarizeStreaming(text, { signal });
+        let acc = "";
+        for await (const chunk of stream) {
+            acc += chunk;
+            onChunk(acc);
+        }
+        return acc;
+    } finally {
+        try {
+            summarizer.destroy?.();
+        } catch {}
     }
-    // Handle other message types if needed
-    return false; // No async response planned for other types
+}
+
+// ---------- Gemini cloud (streaming SSE) ----------
+
+async function runGemini({ text, length, signal, onChunk }) {
+    const apiKey = await getApiKey();
+    if (!apiKey) {
+        const err = new Error("No Gemini API key configured.");
+        err.kind = "no-key";
+        throw err;
+    }
+
+    const prompt = await getCustomPrompt();
+    const cfg = LENGTH_CONFIG[length];
+    const body = {
+        contents: [
+            {
+                parts: [{ text: `${prompt} ${cfg.hint}\n\n${text}` }],
+            },
+        ],
+        generationConfig: {
+            temperature: 0.4,
+            maxOutputTokens: cfg.maxTokens,
+        },
+    };
+
+    const url = `${GEMINI_STREAM_URL}?alt=sse&key=${encodeURIComponent(apiKey)}`;
+    let res;
+    try {
+        res = await fetch(url, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(body),
+            signal,
+        });
+    } catch (netErr) {
+        if (netErr.name === "AbortError") throw netErr;
+        const err = new Error(`Network error: ${netErr.message}`);
+        err.kind = "network";
+        throw err;
+    }
+
+    if (!res.ok) {
+        const errorBody = await res.text().catch(() => "");
+        const err = new Error(
+            `Gemini API ${res.status}: ${res.statusText}${
+                errorBody ? ` — ${errorBody.slice(0, 200)}` : ""
+            }`
+        );
+        err.kind = res.status === 401 || res.status === 403 ? "no-key" : "network";
+        throw err;
+    }
+
+    // Parse SSE stream.
+    const reader = res.body.getReader();
+    const decoder = new TextDecoder();
+    let buf = "";
+    let acc = "";
+
+    while (true) {
+        const { value, done } = await reader.read();
+        if (done) break;
+        buf += decoder.decode(value, { stream: true });
+
+        // SSE events separated by blank line; each line "data: {...}"
+        let sepIdx;
+        while ((sepIdx = buf.indexOf("\n\n")) !== -1) {
+            const event = buf.slice(0, sepIdx);
+            buf = buf.slice(sepIdx + 2);
+            const dataLine = event
+                .split("\n")
+                .find((l) => l.startsWith("data:"));
+            if (!dataLine) continue;
+            const json = dataLine.slice(5).trim();
+            if (!json) continue;
+            try {
+                const payload = JSON.parse(json);
+                const piece =
+                    payload?.candidates?.[0]?.content?.parts?.[0]?.text || "";
+                if (piece) {
+                    acc += piece;
+                    onChunk(acc);
+                }
+            } catch (e) {
+                console.warn("[gemini] bad SSE chunk:", json.slice(0, 100));
+            }
+        }
+    }
+    return acc;
+}
+
+// ---------- Orchestration ----------
+
+async function summarize({ text, length, sessionId }) {
+    if (!text || text.trim().length < 10) {
+        await writeState({
+            sessionId,
+            status: "error",
+            errorKind: "content",
+            errorMessage: "Text is too short to summarize (min 10 chars).",
+            summaryText: "",
+        });
+        return;
+    }
+
+    // Cancel any in-flight request.
+    if (activeController) {
+        try {
+            activeController.abort();
+        } catch {}
+    }
+    activeController = new AbortController();
+    activeSessionId = sessionId;
+    const signal = activeController.signal;
+
+    const nanoState = await nanoAvailability();
+    const useNano = nanoState === "available" || nanoState === "downloadable";
+    const provider = useNano ? "nano" : "gemini";
+
+    await writeState({
+        sessionId,
+        selectedText: text,
+        summaryText: "",
+        status: "streaming",
+        errorKind: null,
+        errorMessage: "",
+        provider,
+        length,
+        downloadProgress: nanoState === "downloadable" ? 0 : null,
+    });
+
+    const onChunk = async (acc) => {
+        // Only flush if this request is still the active one.
+        if (activeSessionId !== sessionId) return;
+        await writeState({ summaryText: acc });
+    };
+
+    try {
+        if (useNano) {
+            await runNano({ text, length, signal, onChunk });
+        } else {
+            await runGemini({ text, length, signal, onChunk });
+        }
+
+        if (activeSessionId === sessionId) {
+            await writeState({ status: "done", downloadProgress: null });
+        }
+    } catch (err) {
+        if (err.name === "AbortError") {
+            await writeState({ status: "aborted" });
+            return;
+        }
+        console.error("[summarize] failed:", err);
+
+        // Nano failure → fall back to Gemini once.
+        if (useNano && err.kind !== "no-key") {
+            console.warn("[summarize] nano failed, falling back to Gemini");
+            try {
+                await writeState({ provider: "gemini", summaryText: "" });
+                await runGemini({ text, length, signal, onChunk });
+                if (activeSessionId === sessionId) {
+                    await writeState({ status: "done" });
+                }
+                return;
+            } catch (err2) {
+                if (err2.name === "AbortError") {
+                    await writeState({ status: "aborted" });
+                    return;
+                }
+                err = err2;
+            }
+        }
+
+        await writeState({
+            status: "error",
+            errorKind: err.kind || "unavailable",
+            errorMessage: err.message || String(err),
+        });
+    } finally {
+        if (activeSessionId === sessionId) {
+            activeController = null;
+            activeSessionId = null;
+        }
+    }
+}
+
+function makeSessionId() {
+    return Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+}
+
+// ---------- Context menu ----------
+
+chrome.runtime.onInstalled.addListener((details) => {
+    chrome.contextMenus.remove("summarizeSelection", () => {
+        void chrome.runtime.lastError; // swallow "not found"
+        chrome.contextMenus.create({
+            id: "summarizeSelection",
+            title: "Summarize selection",
+            contexts: ["selection"],
+        });
+    });
+
+    // First-install onboarding.
+    if (details.reason === "install") {
+        chrome.tabs.create({
+            url: chrome.runtime.getURL("welcome.html"),
+        });
+    }
+});
+
+chrome.contextMenus.onClicked.addListener(async (info, tab) => {
+    if (info.menuItemId !== "summarizeSelection" || !info.selectionText) return;
+    await triggerSummarize(info.selectionText, tab);
+});
+
+// ---------- Keyboard shortcut ----------
+
+chrome.commands.onCommand.addListener(async (command) => {
+    if (command !== "summarize-selection") return;
+    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+    if (!tab?.id) return;
+
+    // Grab selection from the active tab via scripting.executeScript.
+    let selection = "";
+    try {
+        const [result] = await chrome.scripting.executeScript({
+            target: { tabId: tab.id },
+            func: () => window.getSelection()?.toString() || "",
+        });
+        selection = result?.result || "";
+    } catch (err) {
+        console.warn("[shortcut] could not read selection:", err);
+    }
+
+    if (!selection.trim()) {
+        // Open the side panel with a helpful empty state.
+        await openSidePanelFor(tab);
+        await writeState({
+            sessionId: makeSessionId(),
+            status: "error",
+            errorKind: "content",
+            errorMessage: "Select some text on the page first, then try again.",
+            selectedText: "",
+            summaryText: "",
+        });
+        return;
+    }
+
+    await triggerSummarize(selection, tab);
+});
+
+// ---------- Shared trigger ----------
+
+async function openSidePanelFor(tab) {
+    let cfg = null;
+    if (tab?.id && tab.id !== -1) cfg = { tabId: tab.id };
+    else if (tab?.windowId) cfg = { windowId: tab.windowId };
+    if (!cfg) return false;
+    try {
+        await chrome.sidePanel.open(cfg);
+        return true;
+    } catch (err) {
+        return false;
+    }
+}
+
+async function triggerSummarize(text, tab) {
+    const sessionId = makeSessionId();
+    const length = await getLength();
+
+    const opened = await openSidePanelFor(tab);
+
+    if (opened) {
+        // Kick off — state updates stream to sidepanel.
+        summarize({ text, length, sessionId });
+        return;
+    }
+
+    // Fallback: open summary_display in new tab (PDF / restricted pages).
+    // Hand text off via chrome.storage.session — no URL param size cap.
+    const handoffKey = `handoff:${sessionId}`;
+    try {
+        await chrome.storage.session.set({
+            [handoffKey]: { text, length, sessionId },
+        });
+    } catch (e) {
+        // storage.session requires MV3 + Chrome 102+; should be safe.
+        console.warn("storage.session unavailable:", e);
+    }
+    const url = new URL(chrome.runtime.getURL("summary_display.html"));
+    url.searchParams.set("handoff", sessionId);
+    chrome.tabs.create({ url: url.toString() });
+}
+
+// ---------- Message handlers (from UIs) ----------
+
+chrome.runtime.onMessage.addListener((req, sender, sendResponse) => {
+    if (req.action === "summarize" && req.text) {
+        const sessionId = req.sessionId || makeSessionId();
+        const length = req.length || DEFAULT_LENGTH;
+        summarize({ text: req.text, length, sessionId }).then(() =>
+            sendResponse({ ok: true, sessionId })
+        );
+        return true;
+    }
+
+    if (req.action === "cancel") {
+        if (activeController) {
+            activeController.abort();
+            activeController = null;
+            activeSessionId = null;
+        }
+        sendResponse({ ok: true });
+        return false;
+    }
+
+    if (req.action === "regenerate" && req.length) {
+        getLocal(["selectedText"]).then(({ selectedText }) => {
+            if (!selectedText) {
+                sendResponse({ ok: false, error: "no-text" });
+                return;
+            }
+            setLocal({ length: req.length });
+            summarize({
+                text: selectedText,
+                length: req.length,
+                sessionId: makeSessionId(),
+            });
+            sendResponse({ ok: true });
+        });
+        return true;
+    }
+
+    if (req.action === "getHandoff" && req.sessionId) {
+        chrome.storage.session
+            .get(`handoff:${req.sessionId}`)
+            .then((data) => {
+                const payload = data[`handoff:${req.sessionId}`];
+                sendResponse({ ok: true, payload });
+                // Clear after handoff.
+                chrome.storage.session.remove(`handoff:${req.sessionId}`);
+            });
+        return true;
+    }
+
+    if (req.action === "nanoAvailability") {
+        nanoAvailability().then((a) => sendResponse({ availability: a }));
+        return true;
+    }
+
+    return false;
 });
